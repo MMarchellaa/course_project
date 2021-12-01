@@ -1,0 +1,13 @@
+.spacer {
+  flex: 1 1 auto;
+}
+
+#menu-item button {
+  display: block;
+  margin: 0 auto;
+}
+
+#search{
+  width: 400px;
+  height: 25px;
+}
