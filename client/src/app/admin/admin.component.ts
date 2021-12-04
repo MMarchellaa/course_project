@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {User} from 'src/app/models/User';
 import {UserService} from '../service/user.service';
 
@@ -7,10 +7,25 @@ import {UserService} from '../service/user.service';
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css']
 })
-export class AdminComponent{
+export class AdminComponent {
 
   users: User[] = this.userService.getAllUsers().subscribe(data => this.users = data);
-  displayedColumns: string[] = ['id', 'username', 'email'];
+  displayedColumns: string[] = ['id', 'username', 'email', 'status', 'activate-button', 'deactivate-button'];
 
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService) {
+  }
+
+  activate(id: number): void {
+    this.userService.activateUser(id)
+      .subscribe(data => {
+        window.location.reload();
+      });
+  }
+
+  unactivate(id: number): void {
+    this.userService.unactivateUser(id)
+      .subscribe(data => {
+        window.location.reload();
+      });
+  }
 }

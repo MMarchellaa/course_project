@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Post} from 'src/app/models/Post';
 import {User} from 'src/app/models/User';
 import {PostService} from 'src/app/service/post.service';
@@ -22,19 +22,18 @@ export class SearchComponent implements OnInit {
   user: User;
 
   constructor(private postService: PostService,
-    private userService: UserService,
-    private commentService: CommentService,
-    private notificationService: NotificationService,
-    private imageService: ImageUploadService,
-    private tokenService: TokenStorageService
-  ) { }
+              private userService: UserService,
+              private commentService: CommentService,
+              private notificationService: NotificationService,
+              private imageService: ImageUploadService,
+              private tokenService: TokenStorageService
+  ) {
+  }
 
   ngOnInit(): void {
     const text = document.location.href.substring(29);
-    console.log(text)
     this.postService.search(text)
       .subscribe(data => {
-        console.log(data);
         this.posts = data;
         this.getImagesToPosts(this.posts);
         this.getCommentsToPosts(this.posts);
@@ -45,10 +44,9 @@ export class SearchComponent implements OnInit {
     if (this.isLoggedIn) {
       this.userService.getCurrentUser()
         .subscribe(data => {
-          console.log(data);
           this.user = data;
           this.isUserDataLoaded = true;
-        })
+        });
     }
   }
 
@@ -57,7 +55,7 @@ export class SearchComponent implements OnInit {
       this.imageService.getImageToPost(p.id)
         .subscribe(data => {
           p.image = data;
-        })
+        });
     });
   }
 
@@ -65,16 +63,17 @@ export class SearchComponent implements OnInit {
     posts.forEach(p => {
       this.commentService.getCommentsToPost(p.id)
         .subscribe(data => {
-          p.comments = data
-        })
+          p.comments = data;
+        });
     });
   }
+
   likePost(postId: number, postIndex: number): void {
     this.isLoggedIn = !!this.tokenService.getToken();
 
     if (this.isLoggedIn) {
       const post = this.posts[postIndex];
-      console.log(post);
+      // console.log(post);
 
       if (!post.usersLiked.includes(this.user.username)) {
         this.postService.likePost(postId, this.user.username)
@@ -97,10 +96,10 @@ export class SearchComponent implements OnInit {
   postComment(message: string, postId: number, postIndex: number): void {
     const post = this.posts[postIndex];
 
-    console.log(post);
+    // console.log(post);
     this.commentService.addToCommentToPost(postId, message)
       .subscribe(data => {
-        console.log(data);
+        // console.log(data);
         post.comments.push(data);
       });
   }

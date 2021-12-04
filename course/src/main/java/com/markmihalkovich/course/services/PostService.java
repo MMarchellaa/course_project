@@ -3,7 +3,6 @@ package com.markmihalkovich.course.services;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.markmihalkovich.course.dto.PostDTO;
-import com.markmihalkovich.course.entity.Comment;
 import com.markmihalkovich.course.entity.Post;
 import com.markmihalkovich.course.entity.User;
 import com.markmihalkovich.course.entity.enums.ERole;
@@ -52,17 +51,12 @@ public class PostService {
 
     public Post updatePost(PostDTO postDTO, Principal principal) {
         User user = getUserByPrincipal(principal);
-        if (!postDTO.getUserId().equals(user.getId()) || !user.getRoles().contains(ERole.ROLE_ADMIN)){
+        if (!postDTO.getUserId().equals(user.getId()) && !user.getRoles().contains(ERole.ROLE_ADMIN)){
             throw new UsernameNotFoundException("User not found");
         }
-        Post post = new Post();
-        post.setId(postDTO.getId());
-        post.setUser(user);
+        Post post = getPostById(postDTO.getId());
         post.setCaption(postDTO.getCaption());
         post.setTitle(postDTO.getTitle());
-        post.setLikes(postDTO.getLikes());
-        post.setRatings(postDTO.getRatings());
-        post.setLikedUsers(postDTO.getUsersLiked());
         post.setLinkToImages(postDTO.getLinkToImages());
         post.setCategory(postDTO.getCategory());
 
@@ -118,7 +112,7 @@ public class PostService {
     public void deletePost(Long postId, Principal principal) throws Exception {
         User user = getUserByPrincipal(principal);
         Post post = getPostById(postId);
-        if (!post.getUser().getId().equals(user.getId()) || !user.getRoles().contains(ERole.ROLE_ADMIN)){
+        if (!post.getUser().getId().equals(user.getId()) && !user.getRoles().contains(ERole.ROLE_ADMIN)){
             throw new UsernameNotFoundException("User not found");
         }
         Map<String, String> options = new HashMap<>();

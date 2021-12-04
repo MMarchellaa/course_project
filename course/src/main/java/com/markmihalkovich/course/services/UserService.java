@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.security.Principal;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Transactional
@@ -47,6 +48,10 @@ public class UserService {
         }
     }
 
+    public User getUserByEmail(String email){
+        return userRepository.findUserByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
+
     public User getCurrentUser(Principal principal) {
         return getUserByPrincipal(principal);
     }
@@ -71,6 +76,7 @@ public class UserService {
         if (user.getRoles().contains(ERole.ROLE_ADMIN)){
             User user1 = getUserById(userId);
             user1.setIsActive("UNACTIVE");
+            userRepository.save(user1);
         }
     }
 
@@ -79,6 +85,12 @@ public class UserService {
         if (user.getRoles().contains(ERole.ROLE_ADMIN)){
             User user1 = getUserById(userId);
             user1.setIsActive("ACTIVE");
+            userRepository.save(user1);
         }
+    }
+
+    public String isEnabled(String email){
+        User user = getUserByEmail(email);
+        return Objects.equals(user.getIsActive(), "ACTIVE") ? "true" : "false";
     }
 }

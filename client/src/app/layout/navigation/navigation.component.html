@@ -1,9 +1,7 @@
 <mat-toolbar color="primary">
-  <span routerLink="/main" style="cursor: pointer;margin-left: 20px;">Itransition course project)</span>
+  <span routerLink="/main" style="cursor: pointer;margin-left: 1%;">Mihalkovich's project</span>
 
-  <button [disabled]="!isAdmin" matTooltip="Login" routerLink="/admin" mat-icon-button class="example-icon favorite-icon">
-    <mat-icon>login</mat-icon>
-  </button>
+  <button mat-flat-button *ngIf="isAdmin && isLoggedIn" routerLink="/admin" color="warn">Admin panel</button>
 
   <span class="spacer"></span>
 
@@ -25,7 +23,7 @@
     <mat-icon color="accent">account_box</mat-icon>
   </button>
   <mat-menu id="menu-item" #menu="matMenu">
-    <button mat-menu-item routerLink="/posts/{{user.id}}">Posts</button>
+    <button *ngIf="isLoggedIn" mat-menu-item routerLink="/posts/{{user.id}}">Posts</button>
     <button (click)="logout()" mat-menu-item>
       Logout
     </button>

@@ -15,6 +15,7 @@ public class UserFacade {
         userDTO.setEmail(user.getEmail());
         userDTO.setRole((user.getRoles().contains(ERole.ROLE_USER)) ? ERole.ROLE_USER : ERole.ROLE_ADMIN);
         userDTO.setIsActive(user.getIsActive());
+
         return userDTO;
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,7 +29,6 @@ public class UserController {
     public ResponseEntity<UserDTO> getCurrentUser(Principal principal) {
         User user = userService.getCurrentUser(principal);
         UserDTO userDTO = userFacade.userToUserDTO(user);
-        System.out.println(user.getRoles());
 
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
@@ -55,15 +55,21 @@ public class UserController {
         return new ResponseEntity<>(role, HttpStatus.OK);
     }
 
-    @PostMapping("/{userId}/unactivate")
-    public ResponseEntity<Object> unactivateUser(@PathVariable("userId") String id, Principal principal){
+    @PostMapping("/unactivate")
+    public ResponseEntity<Object> unactivateUser(@Valid @RequestBody String id, Principal principal){
         userService.unactivateUser(Long.parseLong(id), principal);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/{userId}/activate")
-    public ResponseEntity<Object> activateUser(@PathVariable("userId") String id, Principal principal){
+    @PostMapping("/activate")
+    public ResponseEntity<Object> activateUser(@Valid @RequestBody String id, Principal principal){
         userService.activateUser(Long.parseLong(id), principal);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/isenable/{email}")
+    public ResponseEntity<String> isEnabled(@PathVariable("email") String email){
+        String isEnabled = userService.isEnabled(email);
+        return new ResponseEntity<>(isEnabled, HttpStatus.OK);
     }
 }

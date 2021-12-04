@@ -1,7 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AuthService} from '../../service/auth.service';
-import {TokenStorageService} from '../../service/token-storage.service';
 import {NotificationService} from '../../service/notification.service';
 
 @Component({
@@ -34,15 +33,12 @@ export class RegisterComponent implements OnInit {
   }
 
   submit(): void {
-    console.log(this.registerForm.value);
-
     this.authService.register({
       email: this.registerForm.value.email,
       username: this.registerForm.value.username,
       password: this.registerForm.value.password,
       confirmPassword: this.registerForm.value.confirmPassword,
     }).subscribe(data => {
-      console.log(data);
       this.notificationService.showSnackBar('Successfully Registered!');
     }, error => {
       this.notificationService.showSnackBar('Something went wrong during registration');

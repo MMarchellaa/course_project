@@ -33,7 +33,6 @@ export class IndexComponent implements OnInit {
   ngOnInit(): void {
     this.postService.getAllPosts()
       .subscribe(data => {
-        console.log(data);
         this.posts = data;
         this.getImagesToPosts(this.posts);
         this.getCommentsToPosts(this.posts);
@@ -44,7 +43,6 @@ export class IndexComponent implements OnInit {
     if (this.isLoggedIn) {
       this.userService.getCurrentUser()
         .subscribe(data => {
-          console.log(data);
           this.user = data;
           this.isUserDataLoaded = true;
         });
@@ -74,7 +72,7 @@ export class IndexComponent implements OnInit {
 
     if (this.isLoggedIn) {
       const post = this.posts[postIndex];
-      console.log(post);
+      // console.log(post);
 
       if (!post.usersLiked.includes(this.user.username)) {
         this.postService.likePost(postId, this.user.username)
@@ -97,10 +95,10 @@ export class IndexComponent implements OnInit {
   postComment(message: string, postId: number, postIndex: number): void {
     const post = this.posts[postIndex];
 
-    console.log(post);
+    // console.log(post);
     this.commentService.addToCommentToPost(postId, message)
       .subscribe(data => {
-        console.log(data);
+        // console.log(data);
         post.comments.push(data);
       });
   }

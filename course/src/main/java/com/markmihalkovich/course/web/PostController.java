@@ -66,11 +66,16 @@ public class PostController {
         return new ResponseEntity<>(postDTOList, HttpStatus.OK);
     }
 
+    @GetMapping("/{postId}")
+    public ResponseEntity<PostDTO> getPost(@PathVariable("postId") String postId) {
+        PostDTO postDTO = postFacade.postToPostDTO(postService.getPostById(Long.parseLong(postId)));
+        return new ResponseEntity<>(postDTO, HttpStatus.OK);
+    }
+
     @PostMapping("/user/posts/update")
     public ResponseEntity<Object> updatePost(@Valid @RequestBody PostDTO postDTO, BindingResult bindingResult, Principal principal) {
         ResponseEntity<Object> errors = responseErrorValidation.mapValidationService(bindingResult);
         if (!ObjectUtils.isEmpty(errors)) return errors;
-
         Post post = postService.updatePost(postDTO, principal);
 
         PostDTO postUpdated = postFacade.postToPostDTO(post);
@@ -102,25 +107,16 @@ public class PostController {
         return new ResponseEntity<>(new MessageResponse("Post was deleted"), HttpStatus.OK);
     }
 
-    @GetMapping("/{postId}")
-    public ResponseEntity<MessageResponse> getPost(@PathVariable("postId") String postId) {
-        postService.getPostById(Long.parseLong(postId));
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
     @GetMapping("/search/{text}")
     public ResponseEntity<List<PostDTO>> searchAll(@PathVariable("text") String text){
-        System.out.println(text);
         List<PostDTO> postDTOList = postService.searchPosts(text)
                 .stream()
                 .map(postFacade::postToPostDTO)
                 .collect(Collectors.toList());
-        System.out.println(postDTOList);
         postDTOList.addAll(commentService.getPostsByComment(text)
                 .stream()
                 .map(postFacade::postToPostDTO)
                 .collect(Collectors.toList()));
-        System.out.println(postDTOList);
 
         return new ResponseEntity<>(postDTOList, HttpStatus.OK);
     }

@@ -25,12 +25,12 @@ export class PostService {
     return this.http.get(POST_API + 'all');
   }
 
-  getPosts(id: number): Observable<any>{
-    return this.http.get(POST_API + 'user/posts/' + id)
+  getPosts(id: number): Observable<any> {
+    return this.http.get(POST_API + 'user/posts/' + id);
   }
 
-  getPostForCurrentUser(): Observable<any> {
-    return this.http.get(POST_API + 'user/posts');
+  getPost(id: number): Observable<any> {
+    return this.http.get(POST_API + id);
   }
 
   deletePost(id: number): Observable<any> {
@@ -41,7 +41,7 @@ export class PostService {
     return this.http.post(POST_API + id + '/' + username + '/like', null);
   }
 
-  search(text: string): Observable<any>{
+  search(text: string): Observable<any> {
     return this.http.get(POST_API + 'search/' + text);
   }
 }

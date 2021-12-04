@@ -1,9 +1,7 @@
 package com.markmihalkovich.course.security;
 
-import com.markmihalkovich.course.entity.enums.ERole;
 import com.markmihalkovich.course.services.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -41,7 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/api/post/all", "/", "/main", "/api/auth/signin",
                         "/api/auth/signup", "/api/image/getimage/*", "/api/comment/all/*",
-                        "/api/post/search/*").permitAll()
+                        "/api/post/search/*", "/api/user/isenable/*").permitAll()
                 .anyRequest().authenticated();
 
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

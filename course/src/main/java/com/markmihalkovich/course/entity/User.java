@@ -22,7 +22,7 @@ public class User implements UserDetails {
     @Column(length = 3000)
     private String password;
     @Column
-    private boolean isActive;
+    private String isActive;
 
     @ElementCollection(targetClass = ERole.class)
     @CollectionTable(name = "user_role",
@@ -72,7 +72,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return this.isActive;
+        return true;
     }
 }
 

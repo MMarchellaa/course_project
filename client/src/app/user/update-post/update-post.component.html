@@ -1,34 +1,31 @@
 <div>
-  <div style="text-align: right">
-    <button mat-flat-button color="primary" routerLink="/posts">My Posts</button>
-  </div>
 
   <h2>Update Post</h2>
   <form [formGroup]="postForm">
 
-    <img class="post-image" [src]="previewImgURL" alt="user image">
+    <mat-card-content class="post-image-card" align="center" *ngFor="let image of post.image; let i = index">
+      <img [src]="image" width="20%" height="20%" alt="image">
+    </mat-card-content>
 
     <input type="file"
            style="display: none"
            #fileInput
            multiple
-           (change)="onFileSelected($event)"
-           [defaultValue]="post.image">
+           (change)="onFileSelected($event)">
 
     <button mat-button (click)="fileInput.click()">Pick File</button>
 
     <mat-form-field class="w-100" appearance="outline">
       <mat-label>Title</mat-label>
-      <input matInput
-             formControlName="title" [defaultValue]="post.title">
+      <input matInput formControlName="title">
     </mat-form-field>
     <mat-form-field class="w-100" appearance="outline">
       <mat-label>Caption</mat-label>
-      <textarea matInput formControlName="caption" class="variable-textarea" [defaultValue]="post.caption"></textarea>
+      <textarea matInput formControlName="caption" class="variable-textarea"></textarea>
     </mat-form-field>
     <mat-form-field class="w-100" appearance="outline">
       <mat-label>Category</mat-label>
-      <mat-select formControlName="category" ngDefaultControl="post.category">
+      <mat-select formControlName="category" [value]="">
         <mat-option value="CATEGORY_BOOKS">Books</mat-option>
         <mat-option value="CATEGORY_GAMES">Games</mat-option>
         <mat-option value="CATEGORY_FILMS">Films</mat-option>

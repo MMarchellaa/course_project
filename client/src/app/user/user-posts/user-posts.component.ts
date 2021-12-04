@@ -5,7 +5,6 @@ import {ImageUploadService} from '../../service/image-upload.service';
 import {CommentService} from '../../service/comment.service';
 import {NotificationService} from '../../service/notification.service';
 import {Router} from '@angular/router';
-import {UserService} from '../../service/user.service';
 import {User} from '../../models/User';
 
 @Component({
@@ -25,16 +24,13 @@ export class UserPostsComponent implements OnInit {
               private imageService: ImageUploadService,
               private commentService: CommentService,
               private notificationService: NotificationService,
-              private router: Router,
-              private userService: UserService) {
+              private router: Router) {
   }
 
   ngOnInit(): void {
     this.userId = parseInt(document.location.href.substring(28));
-    console.log(this.userId);
     this.postService.getPosts(this.userId)
       .subscribe(data => {
-        console.log(data);
         this.posts = data;
         this.getImagesToPosts(this.posts);
         this.getCommentsToPosts(this.posts);
@@ -62,7 +58,7 @@ export class UserPostsComponent implements OnInit {
   }
 
   removePost(post: Post, index: number): void {
-    console.log(post);
+    // console.log(post);
     const result = confirm('Do you really want to delete this post?');
     if (result) {
       this.postService.deletePost(post.id)

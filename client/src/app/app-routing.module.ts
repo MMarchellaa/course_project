@@ -21,7 +21,13 @@ const routes: Routes = [
     }]
   },
   {path: 'admin', component: AdminComponent},
-  {path: 'update', component: UpdatePostComponent},
+  {
+    path: 'update', pathMatch: 'prefix', component: UpdatePostComponent,
+    children: [{
+      path: '**',
+      component: UpdatePostComponent
+    }]
+  },
   {path: 'main', component: IndexComponent},
   {
     path: 'posts', pathMatch: 'prefix', component: UserPostsComponent,

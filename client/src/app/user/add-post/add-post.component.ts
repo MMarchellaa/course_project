@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Post} from '../../models/Post';
 import {PostService} from '../../service/post.service';
@@ -46,7 +46,6 @@ export class AddPostComponent implements OnInit {
       category: this.postForm.value.category
     }).subscribe(data => {
       this.createdPost = data;
-      console.log(data);
 
       if (this.createdPost.id != null) {
         this.imageUploadService.uploadImageToPost(this.selectedFile, this.createdPost.id)
@@ -64,7 +63,7 @@ export class AddPostComponent implements OnInit {
 
     const reader = new FileReader();
     reader.readAsDataURL(this.selectedFile);
-    reader.onload = (e) => {
+    reader.onload = () => {
       this.previewImgURL = reader.result;
     };
   }

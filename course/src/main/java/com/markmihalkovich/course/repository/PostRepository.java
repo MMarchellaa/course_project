@@ -1,9 +1,7 @@
 package com.markmihalkovich.course.repository;
 
-import com.markmihalkovich.course.entity.Comment;
 import com.markmihalkovich.course.entity.Post;
 import com.markmihalkovich.course.entity.User;
-import com.markmihalkovich.course.entity.enums.ECategory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
