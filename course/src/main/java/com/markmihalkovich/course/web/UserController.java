@@ -31,8 +31,8 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<UserDTO> getUserProfile(@PathVariable("userId") String userId) {
-        UserDTO userDTO = userFacade.userToUserDTO(userService.getUserById(Long.parseLong(userId)));
+    public ResponseEntity<UserDTO> getUserProfile(@PathVariable("userId") Long userId) {
+        UserDTO userDTO = userFacade.userToUserDTO(userService.getUserById(userId));
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 
@@ -43,20 +43,20 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/role")
-    public ResponseEntity<String> getUserRole(@PathVariable("userId") String id){
-        String role = (userService.getUserById(Long.parseLong(id)).getRoles().contains(ERole.ROLE_USER)) ? "USER" : "ADMIN";
+    public ResponseEntity<String> getUserRole(@PathVariable("userId") Long id){
+        String role = (userService.getUserById(id).getRoles().contains(ERole.ROLE_USER)) ? "USER" : "ADMIN";
         return new ResponseEntity<>(role, HttpStatus.OK);
     }
 
     @PostMapping("/unactivate")
-    public ResponseEntity<Object> unactivateUser(@Valid @RequestBody String id, Principal principal){
-        userService.unactivateUser(Long.parseLong(id), principal);
+    public ResponseEntity<Object> unactivateUser(@Valid @RequestBody Long id, Principal principal){
+        userService.unactivateUser(id, principal);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/activate")
-    public ResponseEntity<Object> activateUser(@Valid @RequestBody String id, Principal principal){
-        userService.activateUser(Long.parseLong(id), principal);
+    public ResponseEntity<Object> activateUser(@Valid @RequestBody Long id, Principal principal){
+        userService.activateUser(id, principal);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

@@ -52,8 +52,8 @@ public class PostController {
     }
 
     @GetMapping("/user/posts/{userId}")
-    public ResponseEntity<List<PostDTO>> getAllPostsForUser(@PathVariable("userId") String userId) {
-        List<PostDTO> postDTOList = postService.getAllPostForUser(Long.parseLong(userId))
+    public ResponseEntity<List<PostDTO>> getAllPostsForUser(@PathVariable("userId") Long userId) {
+        List<PostDTO> postDTOList = postService.getAllPostForUser(userId)
                 .stream()
                 .map(postFacade::postToPostDTO)
                 .collect(Collectors.toList());
@@ -62,8 +62,8 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<PostDTO> getPost(@PathVariable("postId") String postId) {
-        PostDTO postDTO = postFacade.postToPostDTO(postService.getPostById(Long.parseLong(postId)));
+    public ResponseEntity<PostDTO> getPost(@PathVariable("postId") Long postId) {
+        PostDTO postDTO = postFacade.postToPostDTO(postService.getPostById(postId));
         return new ResponseEntity<>(postDTO, HttpStatus.OK);
     }
 
@@ -77,25 +77,25 @@ public class PostController {
     }
 
     @PostMapping("/{postId}/{username}/like")
-    public ResponseEntity<PostDTO> likePost(@PathVariable("postId") String postId,
+    public ResponseEntity<PostDTO> likePost(@PathVariable("postId") Long postId,
                                             @PathVariable("username") String username) {
-        PostDTO postDTO = postFacade.postToPostDTO(postService.likePost(Long.parseLong(postId), username));
+        PostDTO postDTO = postFacade.postToPostDTO(postService.likePost(postId, username));
 
         return new ResponseEntity<>(postDTO, HttpStatus.OK);
     }
 
     @PostMapping("/{postId}/{username}/rating/{rating}")
-    public ResponseEntity<PostDTO> ratePost(@PathVariable("postId") String postId,
+    public ResponseEntity<PostDTO> ratePost(@PathVariable("postId") Long postId,
                                             @PathVariable("username") String username,
                                             @PathVariable("rating") Integer rating) {
-        PostDTO postDTO = postFacade.postToPostDTO(postService.ratePost(Long.parseLong(postId), username, rating));
+        PostDTO postDTO = postFacade.postToPostDTO(postService.ratePost(postId, username, rating));
 
         return new ResponseEntity<>(postDTO, HttpStatus.OK);
     }
 
     @PostMapping("/{postId}/delete")
-    public ResponseEntity<MessageResponse> deletePost(@PathVariable("postId") String postId, Principal principal) throws Exception {
-        postService.deletePost(Long.parseLong(postId), principal);
+    public ResponseEntity<MessageResponse> deletePost(@PathVariable("postId") Long postId, Principal principal) throws Exception {
+        postService.deletePost(postId, principal);
         return new ResponseEntity<>(new MessageResponse("Post was deleted"), HttpStatus.OK);
     }
 
