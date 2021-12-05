@@ -1,5 +1,6 @@
 package com.markmihalkovich.course.security;
 
+import com.markmihalkovich.course.credentials.CredentialsProperties;
 import com.markmihalkovich.course.entity.User;
 import com.markmihalkovich.course.services.UserService;
 import org.slf4j.Logger;
@@ -25,6 +26,8 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     private JWTTokenProvider jwtTokenProvider;
     @Autowired
     private UserService customUserDetailsService;
+    @Autowired
+    private CredentialsProperties credentialsProperties;
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
@@ -49,8 +52,8 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private String getJWTFromRequest(HttpServletRequest request) {
-        String bearToken = request.getHeader(SecurityConstants.HEADER_STRING);
-       if (StringUtils.hasText(bearToken) && bearToken.startsWith(SecurityConstants.TOKEN_PREFIX)) {
+        String bearToken = request.getHeader(credentialsProperties.getSecurityConstants().getHeaderString());
+       if (StringUtils.hasText(bearToken) && bearToken.startsWith(credentialsProperties.getSecurityConstants().getTokenPrefix())) {
            return bearToken.split(" ")[1];
        }
        return null;

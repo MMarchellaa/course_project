@@ -1,8 +1,8 @@
 package com.markmihalkovich.course.services;
 
+import com.markmihalkovich.course.credentials.CredentialsProperties;
 import com.markmihalkovich.course.payload.request.LoginRequest;
 import com.markmihalkovich.course.security.JWTTokenProvider;
-import com.markmihalkovich.course.security.SecurityConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,6 +17,8 @@ public class AuthService {
     private AuthenticationManager authenticationManager;
     @Autowired
     private JWTTokenProvider jwtTokenProvider;
+    @Autowired
+    private CredentialsProperties credentialsProperties;
 
     public String jwtGenerator(LoginRequest loginRequest){
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
@@ -25,6 +27,6 @@ public class AuthService {
         ));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        return SecurityConstants.TOKEN_PREFIX + jwtTokenProvider.generateToken(authentication);
+        return credentialsProperties.getSecurityConstants().getTokenPrefix() + jwtTokenProvider.generateToken(authentication);
     }
 }

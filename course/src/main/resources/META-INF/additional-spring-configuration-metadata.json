@@ -14,5 +14,25 @@
       "name": "credentials.cloudinaryCredentials.apiSecret",
       "type": "java.lang.String",
       "description": "Description for credentials.cloudinaryCredentials.apiSecret."
+    },
+    {
+      "name": "credentials.securityConstants.SECRET",
+      "type": "java.lang.String",
+      "description": "Description for credentials.securityConstants.SECRET."
+    },
+    {
+      "name": "credentials.securityConstants.TOKEN_PREFIX",
+      "type": "java.lang.String",
+      "description": "Description for credentials.securityConstants.TOKEN_PREFIX."
+    },
+    {
+      "name": "credentials.securityConstants.HEADER_STRING",
+      "type": "java.lang.String",
+      "description": "Description for credentials.securityConstants.HEADER_STRING."
+    },
+    {
+      "name": "credentials.securityConstants.CONTENT_TYPE",
+      "type": "java.lang.String",
+      "description": "Description for credentials.securityConstants.CONTENT_TYPE."
     }
   ] }

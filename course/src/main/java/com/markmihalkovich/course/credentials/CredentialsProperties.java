@@ -13,15 +13,24 @@ import org.springframework.boot.context.properties.ConstructorBinding;
 public class CredentialsProperties {
 
     private final CloudinaryCredentials cloudinaryCredentials;
+    private final SecurityConstants securityConstants;
 
     @Getter
     @Setter
-    @RequiredArgsConstructor
     public static class CloudinaryCredentials {
         private String cloudName;
 
         private String apiKey;
 
         private String apiSecret;
+    }
+
+    @Getter
+    @Setter
+    public static class SecurityConstants{
+        private String secret;
+        private String tokenPrefix;
+        private String headerString;
+        private String contentType;
     }
 }
