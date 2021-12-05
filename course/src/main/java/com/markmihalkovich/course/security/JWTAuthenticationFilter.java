@@ -1,7 +1,7 @@
 package com.markmihalkovich.course.security;
 
 import com.markmihalkovich.course.entity.User;
-import com.markmihalkovich.course.services.CustomUserDetailsService;
+import com.markmihalkovich.course.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private JWTTokenProvider jwtTokenProvider;
     @Autowired
-    private CustomUserDetailsService customUserDetailsService;
+    private UserService customUserDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {

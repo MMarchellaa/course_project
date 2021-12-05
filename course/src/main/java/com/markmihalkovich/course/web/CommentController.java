@@ -1,7 +1,6 @@
 package com.markmihalkovich.course.web;
 
 import com.markmihalkovich.course.dto.CommentDTO;
-import com.markmihalkovich.course.entity.Comment;
 import com.markmihalkovich.course.facade.CommentFacade;
 import com.markmihalkovich.course.payload.reponse.MessageResponse;
 import com.markmihalkovich.course.services.CommentService;
@@ -38,8 +37,7 @@ public class CommentController {
         ResponseEntity<Object> errors = responseErrorValidation.mapValidationService(bindingResult);
         if (!ObjectUtils.isEmpty(errors)) return errors;
 
-        Comment comment = commentService.saveComment(Long.parseLong(postId), commentDTO, principal);
-        CommentDTO createdComment = commentFacade.commentToCommentDTO(comment);
+        CommentDTO createdComment = commentFacade.commentToCommentDTO(commentService.saveComment(Long.parseLong(postId), commentDTO, principal));
 
         return new ResponseEntity<>(createdComment, HttpStatus.OK);
     }

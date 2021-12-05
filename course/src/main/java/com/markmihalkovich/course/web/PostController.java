@@ -1,10 +1,8 @@
 package com.markmihalkovich.course.web;
 
 import com.markmihalkovich.course.dto.PostDTO;
-import com.markmihalkovich.course.entity.Post;
 import com.markmihalkovich.course.facade.PostFacade;
 import com.markmihalkovich.course.payload.reponse.MessageResponse;
-import com.markmihalkovich.course.services.CommentService;
 import com.markmihalkovich.course.services.PostService;
 import com.markmihalkovich.course.validations.ResponseErrorValidation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +28,6 @@ public class PostController {
     private PostService postService;
     @Autowired
     private ResponseErrorValidation responseErrorValidation;
-    @Autowired
-    private CommentService commentService;
 
     @PostMapping("/create")
     public ResponseEntity<Object> createPost(@Valid @RequestBody PostDTO postDTO,
@@ -40,8 +36,7 @@ public class PostController {
         ResponseEntity<Object> errors = responseErrorValidation.mapValidationService(bindingResult);
         if (!ObjectUtils.isEmpty(errors)) return errors;
 
-        Post post = postService.createPost(postDTO, principal);
-        PostDTO createdPost = postFacade.postToPostDTO(post);
+        PostDTO createdPost = postFacade.postToPostDTO(postService.createPost(postDTO, principal));
 
         return new ResponseEntity<>(createdPost, HttpStatus.OK);
     }
@@ -76,17 +71,15 @@ public class PostController {
     public ResponseEntity<Object> updatePost(@Valid @RequestBody PostDTO postDTO, BindingResult bindingResult, Principal principal) {
         ResponseEntity<Object> errors = responseErrorValidation.mapValidationService(bindingResult);
         if (!ObjectUtils.isEmpty(errors)) return errors;
-        Post post = postService.updatePost(postDTO, principal);
 
-        PostDTO postUpdated = postFacade.postToPostDTO(post);
+        PostDTO postUpdated = postFacade.postToPostDTO(postService.updatePost(postDTO, principal));
         return new ResponseEntity<>(postUpdated, HttpStatus.OK);
     }
 
     @PostMapping("/{postId}/{username}/like")
     public ResponseEntity<PostDTO> likePost(@PathVariable("postId") String postId,
                                             @PathVariable("username") String username) {
-        Post post = postService.likePost(Long.parseLong(postId), username);
-        PostDTO postDTO = postFacade.postToPostDTO(post);
+        PostDTO postDTO = postFacade.postToPostDTO(postService.likePost(Long.parseLong(postId), username));
 
         return new ResponseEntity<>(postDTO, HttpStatus.OK);
     }
@@ -95,8 +88,7 @@ public class PostController {
     public ResponseEntity<PostDTO> ratePost(@PathVariable("postId") String postId,
                                             @PathVariable("username") String username,
                                             @PathVariable("rating") Integer rating) {
-        Post post = postService.ratePost(Long.parseLong(postId), username, rating);
-        PostDTO postDTO = postFacade.postToPostDTO(post);
+        PostDTO postDTO = postFacade.postToPostDTO(postService.ratePost(Long.parseLong(postId), username, rating));
 
         return new ResponseEntity<>(postDTO, HttpStatus.OK);
     }
@@ -113,11 +105,6 @@ public class PostController {
                 .stream()
                 .map(postFacade::postToPostDTO)
                 .collect(Collectors.toList());
-        postDTOList.addAll(commentService.getPostsByComment(text)
-                .stream()
-                .map(postFacade::postToPostDTO)
-                .collect(Collectors.toList()));
-
         return new ResponseEntity<>(postDTOList, HttpStatus.OK);
     }
 }

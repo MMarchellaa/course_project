@@ -1,7 +1,6 @@
 package com.markmihalkovich.course.web;
 
 import com.markmihalkovich.course.dto.UserDTO;
-import com.markmihalkovich.course.entity.User;
 import com.markmihalkovich.course.entity.enums.ERole;
 import com.markmihalkovich.course.facade.UserFacade;
 import com.markmihalkovich.course.services.UserService;
@@ -27,31 +26,25 @@ public class UserController {
 
     @GetMapping("/")
     public ResponseEntity<UserDTO> getCurrentUser(Principal principal) {
-        User user = userService.getCurrentUser(principal);
-        UserDTO userDTO = userFacade.userToUserDTO(user);
-
+        UserDTO userDTO = userFacade.userToUserDTO(userService.getCurrentUser(principal));
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 
     @GetMapping("/{userId}")
     public ResponseEntity<UserDTO> getUserProfile(@PathVariable("userId") String userId) {
-        User user = userService.getUserById(Long.parseLong(userId));
-        UserDTO userDTO = userFacade.userToUserDTO(user);
-
+        UserDTO userDTO = userFacade.userToUserDTO(userService.getUserById(Long.parseLong(userId)));
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 
     @GetMapping("/all")
     public ResponseEntity<List<UserDTO>> getAllUsers(){
-        List<User> users = userService.getAllUsers();
-        List<UserDTO> usersDTO = users.stream().map(user -> userFacade.userToUserDTO(user)).collect(Collectors.toList());
+        List<UserDTO> usersDTO = userService.getAllUsers().stream().map(user -> userFacade.userToUserDTO(user)).collect(Collectors.toList());
         return new ResponseEntity<>(usersDTO, HttpStatus.OK);
     }
 
     @GetMapping("/{userId}/role")
     public ResponseEntity<String> getUserRole(@PathVariable("userId") String id){
-        User user = userService.getUserById(Long.parseLong(id));
-        String role = (user.getRoles().contains(ERole.ROLE_USER)) ? "USER" : "ADMIN";
+        String role = (userService.getUserById(Long.parseLong(id)).getRoles().contains(ERole.ROLE_USER)) ? "USER" : "ADMIN";
         return new ResponseEntity<>(role, HttpStatus.OK);
     }
 
