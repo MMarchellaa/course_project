@@ -2,6 +2,7 @@ package com.markmihalkovich.course.services;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import com.markmihalkovich.course.credentials.CredentialsProperties;
 import com.markmihalkovich.course.dto.PostDTO;
 import com.markmihalkovich.course.entity.Post;
 import com.markmihalkovich.course.entity.User;
@@ -24,15 +25,17 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-    Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
-            "cloud_name", "dmxhppjo7",
-            "api_key", "874533448789599",
-            "api_secret", "DDvCPuJRTqwfLI8Vm0I_LLz0-k0"));
+    private final Cloudinary cloudinary;
+
 
     @Autowired
-    public PostService(PostRepository postRepository, UserRepository userRepository) {
+    public PostService(PostRepository postRepository, UserRepository userRepository, CredentialsProperties credentialsProperties) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
+        this.cloudinary = new Cloudinary(ObjectUtils.asMap(
+                "cloud_name", credentialsProperties.getCloudinaryCredentials().getCloudName(),
+                "api_key", credentialsProperties.getCloudinaryCredentials().getApiKey(),
+                "api_secret", credentialsProperties.getCloudinaryCredentials().getApiSecret()));
     }
 
     public Post createPost(PostDTO postDTO, Principal principal) {

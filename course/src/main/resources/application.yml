@@ -1,0 +1,31 @@
+spring:
+    datasource:
+        password: bestuser
+        url: jdbc:mysql://localhost:3306/course?useUnicode=true&serverTimezone=UTC&useSSL=true&verifyServerCertificate=false
+        username: bestuser
+    jpa:
+        hibernate:
+            ddl-auto: update
+    main:
+        allow-bean-definition-overriding: true
+    security:
+        oauth2:
+            client:
+                registration:
+                    facebook:
+                        client-id: 582632079626941
+                        client-secret: eb9230e4617ba2438ee9f3ca27ae4292
+                    github:
+                        client-id: a86ba1abc9b6967bcd74
+                        client-secret: 678d457705452455821e82b510d9c5f228654fd0
+                    google:
+                        client-id: 1000967388897-2pi0s5kjspki8e4iv59p53kgdkbiedfb.apps.googleusercontent.com
+                        client-secret: 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
+    servlet:
+        multipart:
+            max-file-size: -1
+credentials:
+    cloudinaryCredentials:
+        cloudName: "dmxhppjo7"
+        apiKey: "874533448789599"
+        apiSecret: "DDvCPuJRTqwfLI8Vm0I_LLz0-k0"

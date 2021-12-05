@@ -1,0 +1,18 @@
+{
+  "properties": [
+    {
+      "name": "credentials.cloudinaryCredentials.cloudName",
+      "type": "java.lang.String",
+      "description": "Description for credentials.cloudinaryCredentials.cloudName."
+    },
+    {
+      "name": "credentials.cloudinaryCredentials.apiKey",
+      "type": "java.lang.String",
+      "description": "Description for credentials.cloudinaryCredentials.apiKey."
+    },
+    {
+      "name": "credentials.cloudinaryCredentials.apiSecret",
+      "type": "java.lang.String",
+      "description": "Description for credentials.cloudinaryCredentials.apiSecret."
+    }
+  ] }
