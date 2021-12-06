@@ -8,13 +8,13 @@ import com.markmihalkovich.course.entity.enums.ERole;
 import com.markmihalkovich.course.exceptions.PostNotFoundException;
 import com.markmihalkovich.course.repository.CommentRepository;
 import com.markmihalkovich.course.repository.PostRepository;
-import com.markmihalkovich.course.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
@@ -26,17 +26,18 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Autowired
-    public CommentService(CommentRepository commentRepository, PostRepository postRepository, UserRepository userRepository) {
+    public CommentService(CommentRepository commentRepository, PostRepository postRepository, UserService userService) {
         this.commentRepository = commentRepository;
         this.postRepository = postRepository;
-        this.userRepository = userRepository;
+        this.userService = userService;
     }
 
+    @Transactional
     public Comment saveComment(Long postId, CommentDTO commentDTO, Principal principal) {
-        User user = getUserByPrincipal(principal);
+        User user = this.userService.getUserByPrincipal(principal);
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostNotFoundException("Post cannot be found for username: " + user.getEmail()));
 
@@ -57,9 +58,10 @@ public class CommentService {
         return commentRepository.findAllByPost(post);
     }
 
+    @Transactional
     public void deleteComment(Long commentId, Principal principal) {
         Optional<Comment> comment = commentRepository.findById(commentId);
-        User user = getUserByPrincipal(principal);
+        User user = this.userService.getUserByPrincipal(principal);
         if (comment.isPresent()) {
             if (!comment.get().getUserId().equals(user.getId()) || !user.getRoles().contains(ERole.ROLE_ADMIN) ||
                     !comment.get().getPost().getUser().getId().equals(user.getId())) {
@@ -67,13 +69,6 @@ public class CommentService {
             }
             comment.ifPresent(commentRepository::delete);
         }
-    }
-
-
-    private User getUserByPrincipal(Principal principal) {
-        String username = principal.getName();
-        return userRepository.findUserByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Username not found with username " + username));
     }
 
     public List<Post> getPostsByComment(String text) {

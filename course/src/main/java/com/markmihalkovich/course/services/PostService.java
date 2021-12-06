@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.security.Principal;
 import java.util.*;
 
@@ -26,20 +27,23 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final Cloudinary cloudinary;
+    private final UserService userService;
 
 
     @Autowired
-    public PostService(PostRepository postRepository, UserRepository userRepository, CredentialsProperties credentialsProperties) {
+    public PostService(PostRepository postRepository, UserRepository userRepository, CredentialsProperties credentialsProperties, UserService userService) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.cloudinary = new Cloudinary(ObjectUtils.asMap(
                 "cloud_name", credentialsProperties.getCloudinaryCredentials().getCloudName(),
                 "api_key", credentialsProperties.getCloudinaryCredentials().getApiKey(),
                 "api_secret", credentialsProperties.getCloudinaryCredentials().getApiSecret()));
+        this.userService = userService;
     }
 
+    @Transactional
     public Post createPost(PostDTO postDTO, Principal principal) {
-        User user = getUserByPrincipal(principal);
+        User user = this.userService.getUserByPrincipal(principal);
         Post post = new Post();
         post.setUser(user);
         post.setCaption(postDTO.getCaption());
@@ -52,8 +56,9 @@ public class PostService {
         return postRepository.save(post);
     }
 
+    @Transactional
     public Post updatePost(PostDTO postDTO, Principal principal) {
-        User user = getUserByPrincipal(principal);
+        User user = this.userService.getUserByPrincipal(principal);
         if (!postDTO.getUserId().equals(user.getId()) && !user.getRoles().contains(ERole.ROLE_ADMIN)){
             throw new UsernameNotFoundException("User not found");
         }
@@ -80,6 +85,7 @@ public class PostService {
         return postRepository.findAllByUserOrderByCreatedDateDesc(user);
     }
 
+    @Transactional
     public Post likePost(Long postId, String username) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostNotFoundException("Post cannot be found"));
@@ -98,6 +104,7 @@ public class PostService {
         return postRepository.save(post);
     }
 
+    @Transactional
     public Post ratePost(Long postId, String username, Integer rating) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostNotFoundException("Post cannot be found"));
@@ -112,8 +119,9 @@ public class PostService {
         return postRepository.save(post);
     }
 
+    @Transactional
     public void deletePost(Long postId, Principal principal) throws Exception {
-        User user = getUserByPrincipal(principal);
+        User user = this.userService.getUserByPrincipal(principal);
         Post post = getPostById(postId);
         if (!post.getUser().getId().equals(user.getId()) && !user.getRoles().contains(ERole.ROLE_ADMIN)){
             throw new UsernameNotFoundException("User not found");
@@ -124,12 +132,6 @@ public class PostService {
         } finally {
             postRepository.delete(post);
         }
-    }
-
-    private User getUserByPrincipal(Principal principal) {
-        String username = principal.getName();
-        return userRepository.findUserByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Username not found with username " + username));
     }
 
     public List<Post> searchPosts(String text) {

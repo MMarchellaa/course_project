@@ -6,15 +6,14 @@ import com.markmihalkovich.course.credentials.CredentialsProperties;
 import com.markmihalkovich.course.entity.Post;
 import com.markmihalkovich.course.entity.User;
 import com.markmihalkovich.course.repository.PostRepository;
-import com.markmihalkovich.course.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.HashMap;
@@ -28,22 +27,23 @@ import java.util.stream.Collectors;
 public class ImageUploadService {
     public static final Logger LOG = LoggerFactory.getLogger(ImageUploadService.class);
 
-    private final UserRepository userRepository;
     private final PostRepository postRepository;
     private final Cloudinary cloudinary;
+    private final UserService userService;
 
     @Autowired
-    public ImageUploadService(UserRepository userRepository, PostRepository postRepository, CredentialsProperties credentialsProperties) {
-        this.userRepository = userRepository;
+    public ImageUploadService(PostRepository postRepository, CredentialsProperties credentialsProperties, UserService userService) {
         this.postRepository = postRepository;
         this.cloudinary = new Cloudinary(ObjectUtils.asMap(
                 "cloud_name", credentialsProperties.getCloudinaryCredentials().getCloudName(),
                 "api_key", credentialsProperties.getCloudinaryCredentials().getApiKey(),
                 "api_secret", credentialsProperties.getCloudinaryCredentials().getApiSecret()));
+        this.userService = userService;
     }
 
+    @Transactional
     public void uploadImageToPost(MultipartFile file, Principal principal, Long postId) throws IOException {
-        User user = getUserByPrincipal(principal);
+        User user = this.userService.getUserByPrincipal(principal);
         Post post = user.getPosts()
                 .stream()
                 .filter(p -> p.getId().equals(postId))
@@ -59,13 +59,6 @@ public class ImageUploadService {
 
     public Set<String> getImageToPost(Long postId) {
         return postRepository.getById(postId).getLinkToImages();
-    }
-
-    private User getUserByPrincipal(Principal principal) {
-        String username = principal.getName();
-        return userRepository.findUserByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Username not found with username " + username));
-
     }
 
     private <T> Collector<T, ?, T> toSinglePostCollector() {

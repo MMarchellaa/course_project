@@ -23,7 +23,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
 public class UserService implements UserDetailsService {
     public static final Logger LOG = LoggerFactory.getLogger(UserService.class);
 
@@ -36,6 +35,7 @@ public class UserService implements UserDetailsService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Transactional
     public void createUser(SignupRequest userIn) {
         User user = new User();
         user.setEmail(userIn.getEmail());
@@ -61,7 +61,7 @@ public class UserService implements UserDetailsService {
         return getUserByPrincipal(principal);
     }
 
-    private User getUserByPrincipal(Principal principal) {
+    public User getUserByPrincipal(Principal principal) {
         String username = principal.getName();
         return userRepository.findUserByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Username not found with username " + username));
@@ -76,6 +76,7 @@ public class UserService implements UserDetailsService {
         return userRepository.findUsersByRoles(ERole.ROLE_USER).orElseThrow();
     }
 
+    @Transactional
     public void unactivateUser(Long userId, Principal principal){
         User user = getUserByPrincipal(principal);
         if (user.getRoles().contains(ERole.ROLE_ADMIN)){
@@ -85,6 +86,7 @@ public class UserService implements UserDetailsService {
         }
     }
 
+    @Transactional
     public void activateUser(Long userId, Principal principal){
         User user = getUserByPrincipal(principal);
         if (user.getRoles().contains(ERole.ROLE_ADMIN)){
